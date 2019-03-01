@@ -8,7 +8,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 
 import sys
 from time import sleep
-import lib.auth as auth
+import lib.security as security
 
 
 
@@ -16,8 +16,8 @@ import lib.auth as auth
 app = flask.Flask(__name__)
 login_manager = LoginManager(app)
 
-# Set the secret key to some random bytes. Keep this really secret!
-app.secret_key = b'oknbvcxzaq234rfvbnm,lo987yhbvcxzaq2345tgb'
+# secret key
+app.secret_key = security.get_secret_key()
 
 
 
@@ -29,8 +29,9 @@ def home():
 
 @app.route('/search', methods=['POST'])
 def search():
+    query = flask.request.form['query']
     if flask.request.method == 'POST':
-        return flask.render_template('pages/search_results.html', query=flask.request.form['query'])
+        return flask.render_template('pages/search_results.html', query=query)
 
 
 
@@ -48,8 +49,8 @@ def login():
         return flask.render_template('pages/login.html')
 
     elif flask.request.method == 'POST':
-        if auth.validate_login(flask.request.form):
-            login_user(auth.User())
+        if security.validate_login(flask.request.form):
+            login_user(security.User())
             return flask.redirect('/')
 
         else:
@@ -67,7 +68,7 @@ def logout():
 
 @login_manager.user_loader
 def load_user(user_id):
-    return auth.User()
+    return security.User()
 
 
 
