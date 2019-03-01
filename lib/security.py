@@ -5,7 +5,7 @@ import json
 import random
 import string
 from pathlib import Path
-from hashlib import sha3_512
+from hashlib import sha512
 from flask_login import login_manager
 
 
@@ -53,7 +53,7 @@ def user_lookup(username, password):
     please don't hard-code credentials
     '''
 
-    password_hash = sha3_512(password.encode()).hexdigest()
+    password_hash = sha512(password.encode()).hexdigest()
 
     try:
         with open('db/users.db', 'r') as db_file:
@@ -84,7 +84,7 @@ def create_default_user():
         default_username = 'admin'
         default_password = ''.join(random.choices(string.ascii_letters + string.digits, k=14))
 
-        db[default_username] = sha3_512(default_password.encode()).hexdigest()
+        db[default_username] = sha512(default_password.encode()).hexdigest()
         json.dump(db, db_file)
 
     return (default_username, default_password)
@@ -101,11 +101,11 @@ def get_secret_key():
             secret_key = f.read()
             if len(secret_key) != 32:
                 raise EOFError
+
     except (FileNotFoundError, EOFError):
         with open(str(db_folder / 'flask_secret.key'), 'wb') as f:
             # random 32-character secret
             secret_key = ''.join(random.choices(string.ascii_letters + string.digits, k=32)).encode()
             f.write(secret_key)
 
-    print('SECRET KEY: {}'.format(str(secret_key)))
     return secret_key
