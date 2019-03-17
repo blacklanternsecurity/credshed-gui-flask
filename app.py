@@ -23,20 +23,24 @@ app.secret_key = security.get_secret_key()
 
 @app.route('/')
 def home():
-    return flask.render_template('pages/home.html')
+    if current_user.is_authenticated:
+        return flask.redirect('/search')
+    return flask.redirect('/login')
 
 
-
-@app.route('/search', methods=['POST'])
+@login_required
+@app.route('/search', methods=['GET', 'POST'])
 def search():
-    query = flask.request.form['query']
-    if flask.request.method == 'POST':
+    if flask.request.method == 'GET':
+        return flask.render_template('pages/search.html')
+    elif flask.request.method == 'POST':
+        query = flask.request.form['query']
         return flask.render_template('pages/search_results.html', query=query)
 
 
 
-@app.route('/admin')
 @login_required
+@app.route('/admin')
 def admin():
     return flask.render_template('pages/admin.html')
 
@@ -65,11 +69,9 @@ def logout():
     return flask.redirect('/')
 
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return security.User()
-
 
 
 # start the server with the 'run()' method

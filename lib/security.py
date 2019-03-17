@@ -37,11 +37,12 @@ def validate_login(form):
             # and creds are valid
             valid_login = user_lookup(username, password)
     
-    if valid_login:
-        sys.stderr.write('[+] Valid login:\n')
-        sys.stderr.write('      - Username: {}\n'.format(username))
-        sys.stderr.write('      - Password: {}\n'.format(password))
-    else:
+    #if valid_login:
+    #    sys.stderr.write('[+] Valid login:\n')
+    #    sys.stderr.write('      - Username: {}\n'.format(username))
+    #    sys.stderr.write('      - Password: {}\n'.format(password))
+    #else:
+    if not valid_login:
         sys.stderr.write('[+] Invalid login\n')
 
     return valid_login
