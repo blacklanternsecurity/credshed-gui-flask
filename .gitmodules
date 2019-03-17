@@ -1,0 +1,3 @@
+[submodule "lib/credshed"]
+	path = lib/credshed
+	url = https://github.com/blacklanternsecurity/credshed

@@ -4,28 +4,9 @@
 
 <div class="container">
   <div class="container py-5">
-    <h1 class="text-center">c r e d s h e d</h1>
+    <h1 class="text-monospace text-center">c r e d s h e d</h1>
   </div>
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-10 col-lg-8">
-      <form class="card card-sm">
-        <div class="card-body row no-gutters align-items-center">
-          <div class="col-auto">
-            <i class="fas fa-search h4 text-body"></i>
-          </div>
-          <!--end of col-->
-          <div class="col p-2">
-            <input class="form-control form-control-lg form-control-borderless" type="search" placeholder="email or domain">
-          </div>
-          <!--end of col-->
-          <div class="col-auto p-2">
-            <button class="btn btn-lg btn-success" type="submit">Search</button>
-          </div>
-          <!--end of col-->
-        </div>
-      </form>
-    </div>
-    <!--end of col-->
+    {% include "layouts/search.html" %}
   </div>
 </div>
 

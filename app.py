@@ -6,6 +6,10 @@
 import flask
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
+# cred shed
+from lib.credshed import *
+
+# other
 import sys
 from time import sleep
 import lib.security as security
@@ -31,11 +35,14 @@ def home():
 @login_required
 @app.route('/search', methods=['GET', 'POST'])
 def search():
+    query = 'email or domain'
     if flask.request.method == 'GET':
-        return flask.render_template('pages/search.html')
+        return flask.render_template('pages/search.html', query=query)
     elif flask.request.method == 'POST':
+        credshed = CredShed()
         query = flask.request.form['query']
-        return flask.render_template('pages/search_results.html', query=query)
+        results = '\n'.join([str(result) for result in credshed._search(query)])
+        return flask.render_template('pages/search_results.html', query=query, results=results)
 
 
 
