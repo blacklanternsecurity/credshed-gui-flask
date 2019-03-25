@@ -24,7 +24,6 @@ login_manager = LoginManager(app)
 app.secret_key = security.get_secret_key()
 
 
-
 @app.route('/')
 def home():
     if current_user.is_authenticated:
@@ -32,24 +31,47 @@ def home():
     return flask.redirect('/login')
 
 
-@login_required
 @app.route('/search', methods=['GET', 'POST'])
-def search():
-    query = 'email or domain'
-    if flask.request.method == 'GET':
-        return flask.render_template('pages/search.html', query=query)
-    elif flask.request.method == 'POST':
-        credshed = CredShed()
-        query = flask.request.form['query']
-        results = '\n'.join([str(result) for result in credshed._search(query)])
-        return flask.render_template('pages/search_results.html', query=query, results=results)
-
-
-
 @login_required
-@app.route('/admin')
-def admin():
-    return flask.render_template('pages/admin.html')
+def search():
+
+    #if not current_user.is_authenticated:
+    #    return flask.redirect('/login')
+
+    if flask.request.method == 'GET':
+        return flask.render_template('pages/search.html')
+
+    elif flask.request.method == 'POST':
+
+        query = 'email or domain'
+        error = ''
+        num_results = ''
+        num_accounts_in_db = ''
+        results = []
+        limit = 50000
+
+        try:
+            query = flask.request.form['query']
+            credshed = CredShed()
+            num_accounts_in_db = credshed.db.account_count()
+
+            start_time = datetime.now()
+            results = list(credshed.search(query, limit=limit))
+            if len(results) == limit:
+                error = 'displaying first {:,} results'.format(limit)
+
+            end_time = datetime.now()
+            time_elapsed = (end_time - start_time)
+            num_accounts_in_db = 'Searched {:,} accounts in {} seconds'.format(num_accounts_in_db, str(time_elapsed)[:-4])
+            num_results = '{:,} results for "{}"'.format(len(results), query)
+
+        except CredShedError as e:
+            error = str(e)
+        except KeyError:
+            query = ''
+
+        return flask.render_template('pages/search_results.html',\
+            query=query, results=results, num_accounts=num_accounts_in_db, num_results=num_results, error=error)
 
 
 
