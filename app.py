@@ -48,7 +48,7 @@ def search():
         num_results = ''
         num_accounts_in_db = ''
         results = []
-        limit = 50000
+        limit = 10000
 
         try:
             query = flask.request.form['query']
@@ -58,7 +58,7 @@ def search():
             start_time = datetime.now()
             results = list(credshed.search(query, limit=limit))
             if len(results) == limit:
-                error = 'displaying first {:,} results'.format(limit)
+                error = 'Displaying first {:,} results'.format(limit)
 
             end_time = datetime.now()
             time_elapsed = (end_time - start_time)
