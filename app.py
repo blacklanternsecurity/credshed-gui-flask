@@ -2,6 +2,11 @@
 
 # by TheTechromancer
 
+'''
+TODO:
+    Improve CSV escaping
+'''
+
 # flask classes
 import flask
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
@@ -159,4 +164,4 @@ def load_user(user_id):
 # start the server with the 'run()' method
 if __name__ == '__main__':
 
-    app.run(host='127.0.0.1', debug=True)
+    app.run(host='127.0.0.1')

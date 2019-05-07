@@ -29,6 +29,7 @@ function copyToClipboard(text, el) {
   }
 }
 
+
 $('.js-copy-all').click(function() {
   // Initialize
   // ---------------------------------------------------------------------
@@ -51,6 +52,7 @@ $('.js-copy-all').click(function() {
   var el = $(this);
   copyToClipboard(text, el);
 });
+
 
 $('.js-copy-one').click(function() {
 
