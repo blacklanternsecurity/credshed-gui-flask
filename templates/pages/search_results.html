@@ -5,9 +5,10 @@
 {% include "layouts/search.html" %}
 <div class="container m-2">
   <h6>
-    {{ num_accounts }}
+    {% for entry in search_report %}
+      {{ entry }}
     <br>
-    {{ num_results }}
+    {% endfor %}
   </h6>
 </div>
 <div class="container">
@@ -18,46 +19,40 @@
       <tr>
         <th scope="col">
           <h5 class="text-dark m-3">
-            email:username:password:description
+            email : username : password : description
           </h5>
         </th>
         <th scope="col" style="width: 10%">
         <div class="btn-group m-1">
-          <button type="button" class="btn btn-md btn-secondary js-tooltip js-copy m-1" data-toggle="tooltip" data-placement="top" title="Copy to clipboard">
+          <button type="button" class="btn btn-md btn-secondary js-tooltip m-1 js-copy-all" data-toggle="tooltip" data-placement="top" title="Copy to clipboard">
           <i class="large material-icons">content_copy</i>
           </button>
-          <button type="button" class="btn btn-md btn-secondary js-tooltip m-1" data-toggle="tooltip" data-placement="top" title="Query Stats">
-          <i class="large material-icons">insert_chart</i>
-          </button>
+          <a href="/export_csv?query={{query}}">
+            <button type="button" class="btn btn-md btn-secondary js-tooltip m-1" data-toggle="tooltip" data-placement="top" title="Download CSV">
+            <i class="large material-icons">cloud_download</i>
+            </button>
+          </a>
         </div>
         </th>
       </tr>
     </thead>
-    <tbody>
-      {% for result in results %}
-        <tr>
-          <td scope="row">
-            <div class="panel-group" id="accordion">
-              <div class="px-2 py-1 panel panel-default">
-                <div class="panel-heading">
-                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{ result._id }}">
-                    <div class="credshed-account text-white" _id="{{ result._id }}">
-                      {{ result }}
-                    </div>
-                  </a>
-                </div>
-                <div id="collapse-{{ result._id }}" class="panel-collapse collapse in">
-                  <div class="panel-body">
-                    Account info
-                  </div>
-                </div>
-              </div>
-            </div>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
   </table>
+  <div class="container overflow-auto my-3 px-0">
+    <table class="container-fluid table-light table-striped table-hover overflow-auto">
+      <tbody class="text-nowrap">
+        {% for result in results %}
+          <tr class="js-tooltip js-copy-one" data-toggle="tooltip" title="Copy to clipboard">
+            <td scope="row">
+              <div class="credshed-account text-white" _id="{{ result._id }}">
+                {{ result }}
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <br>
+  </div>
 </div>
 
 {% endblock %}

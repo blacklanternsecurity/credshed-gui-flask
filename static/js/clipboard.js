@@ -22,13 +22,14 @@ function copyToClipboard(text, el) {
     }
     document.body.removeChild(copyTextArea);
     el.attr('data-original-title', elOriginalText);
+
   } else {
     // Fallback if browser doesn't support .execCommand('copy')
     window.prompt("Copy to clipboard: Ctrl+C or Command+C, Enter", text);
   }
 }
 
-$(document).ready(function() {
+$('.js-copy-all').click(function() {
   // Initialize
   // ---------------------------------------------------------------------
 
@@ -44,10 +45,19 @@ $(document).ready(function() {
     .join('\n');
 
   // Copy to clipboard
-  $('.js-copy').click(function() {
-    // replaces break tags with newlines
-    // var text = $('#search-results').html().replace(/<br>/g, '\n').trim();
-    var el = $(this);
-    copyToClipboard(text, el);
-  });
+
+  // replaces break tags with newlines
+  // var text = $('#search-results').html().replace(/<br>/g, '\n').trim();
+  var el = $(this);
+  copyToClipboard(text, el);
+});
+
+$('.js-copy-one').click(function() {
+
+  $('.js-tooltip').tooltip();
+
+  var text = $(this).find('td').find('div')[0].innerText
+
+  var el = $(this);
+  copyToClipboard(text, el);
 });

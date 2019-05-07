@@ -6,8 +6,8 @@
 import flask
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
-# cred shed
-from lib.credshed import *
+# credshed
+from lib.credshed.credshed import *
 
 # other
 import sys
@@ -44,26 +44,14 @@ def search():
     elif flask.request.method == 'POST':
 
         query = 'email or domain'
+        search_report = ''
         error = ''
-        num_results = ''
-        num_accounts_in_db = ''
         results = []
-        limit = 10000
+        limit = 10
 
         try:
-            query = flask.request.form['query']
-            credshed = CredShed()
-            num_accounts_in_db = credshed.db.account_count()
-
-            start_time = datetime.now()
-            results = list(credshed.search(query, limit=limit))
-            if len(results) == limit:
-                error = 'Displaying first {:,} results'.format(limit)
-
-            end_time = datetime.now()
-            time_elapsed = (end_time - start_time)
-            num_accounts_in_db = 'Searched {:,} accounts in {} seconds'.format(num_accounts_in_db, str(time_elapsed)[:-4])
-            num_results = '{:,} results for "{}"'.format(len(results), query)
+            query = flask.request.form['query'].strip()
+            search_report, results = credshed_search(query, limit=limit)
 
         except CredShedError as e:
             error = str(e)
@@ -71,7 +59,44 @@ def search():
             query = ''
 
         return flask.render_template('pages/search_results.html',\
-            query=query, results=results, num_accounts=num_accounts_in_db, num_results=num_results, error=error)
+            query=query, results=results, search_report=search_report, error=error)
+
+
+def credshed_search(query, limit=0):
+    '''
+    returns (search_report, results)
+    '''
+
+    search_report = []
+    credshed = CredShed(metadata=False)
+    num_accounts_in_db = credshed.db.account_count()
+
+    if Account.is_email(query):
+        query_type = 'email'
+        search_report.append('Searching by email')
+    elif re.compile(r'^([a-zA-Z0-9_\-\.]*)\.([a-zA-Z]{2,8})$').match(query):
+        query_type = 'domain'
+        search_report.append('Searching by domain')
+    else:
+        raise CredShedError('Invalid query')
+
+    num_results = 0
+    start_time = datetime.now()
+    if limit:
+        results = list(credshed.search(query, query_type=query_type, limit=limit))
+        num_results = len(results)
+        if num_results == limit:
+            search_report.append('Displaying first {:,} results for "{}"'.format(limit, query))
+        else:
+            search_report.append('{:,} results for "{}"'.format(num_results, query))
+    else:
+        results = credshed.search(query, query_type=query_type, limit=limit)
+
+    end_time = datetime.now()
+    time_elapsed = (end_time - start_time)
+    search_report.append('Searched {:,} accounts in {} seconds'.format(num_accounts_in_db, str(time_elapsed)[:-4]))
+
+    return (search_report, results)
 
 
 
@@ -90,6 +115,34 @@ def login():
             sleep(3)
             return flask.redirect('/login')
 
+
+@app.route('/export_csv')
+@login_required
+def export_csv():
+
+    search_report = []
+    results = []
+
+    try:
+        query = flask.request.args.get('query')
+        if query is not None:
+            query = query.strip()
+        else:
+            query = ''
+        search_report, results = credshed_search(query, limit=0)
+
+    except CredShedError as e:
+        error = str(e)
+
+    def stream_file():
+        yield 'Email,Username,Password,Misc\n'.encode('utf-8')
+        for r in results:
+            account = (','.join(['"{}"'.format(c.replace(',', '""","""').replace('""', '\\"')\
+                ) for c in str(r).split(':')]) + '\n').encode('utf-8')
+            yield account
+
+    return flask.Response(flask.stream_with_context(stream_file()), content_type='text/csv', \
+        headers={'Content-Disposition': 'attachment; filename=credshed_export.csv'})
 
 
 @app.route('/logout')
