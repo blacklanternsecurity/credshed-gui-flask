@@ -1,0 +1,30 @@
+# /etc/systemd/system/credshed-gui.service
+
+[Unit]
+Description=CredShed GUI
+
+# Requirements
+Requires=network.target
+
+# Dependency ordering
+After=network.target
+
+[Service]
+TimeoutStartSec=0
+RestartSec=10
+Restart=always
+
+# path to app
+WorkingDirectory=/opt/credshed-gui
+# run the app as this user
+User=www-data
+
+KillSignal=SIGQUIT
+Type=notify
+NotifyAccess=all
+
+# Main process
+ExecStart=/usr/bin/uwsgi --ini /opt/credshed-gui/webserver/wsgi.ini
+
+[Install]
+WantedBy=multi-user.target
