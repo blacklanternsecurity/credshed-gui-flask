@@ -17,6 +17,7 @@ from lib.credshed.credshed import *
 # other
 import sys
 import string
+import argparse
 from time import sleep
 from datetime import datetime
 import lib.security as security
@@ -152,8 +153,7 @@ def export_csv():
     filename = 'credshed_{}_{date:%Y%m%d-%H%M%S}.csv'.format( query_str, date=datetime.now() )
 
     return flask.Response(flask.stream_with_context(stream_file()), content_type='text/csv', \
-        headers={'Content-Disposition': 'attachment; filename={}'.format(filename)}, \
-        direct_passthrough=True)
+        headers={'Content-Disposition': 'attachment; filename={}'.format(filename)})
 
 
 @app.route('/logout')
@@ -167,7 +167,29 @@ def load_user(user_id):
     return security.User()
 
 
-# start the server with the 'run()' method
+
 if __name__ == '__main__':
 
-    app.run(host='127.0.0.1')
+    default_host = '127.0.0.1'
+    default_port = 5007
+
+    parser = argparse.ArgumentParser(description="Front-end GUI for CredShed")
+    parser.add_argument('-ip', '--ip',      default=default_host,           help='IP address on which to listen (default: {})'.format(default_host))
+    parser.add_argument('-p', '--port',     default=default_port, type=int, help='port on which to listen (default: {})'.format(default_port))
+    parser.add_argument('-d', '--debug',    action='store_true',            help='enable debugging')
+ 
+    try:
+
+        options = parser.parse_args()
+
+
+        # start the server with the 'run()' method
+        app.run(host=options.ip, port=options.port, debug=options.debug)
+
+    except (argparse.ArgumentError, AssertionError) as e:
+        sys.stderr.write('\n[!] {}\n\n'.format(str(e)))
+        sys.exit(2)
+
+    except KeyboardInterrupt:
+        sys.stderr.write('\n[!] Interrupted\n')
+        sys.exit(1)
