@@ -16,8 +16,8 @@ Flask web app front-end for [credshed](https://github.com/blacklanternsecurity/c
     $ python3.7 -m pip install -r requirements.txt
     ~~~
 1. Run the app:
-    - `./credshed-gui`
-1. Browse to http://localhost:5007
+    - `./credshed-gui.py`
+1. Browse to [http://localhost:5007](http://localhost:5007)
 
 ## Production Setup:
 1. Clone github repo into `/opt`
