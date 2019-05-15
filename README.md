@@ -42,15 +42,15 @@ Flask web app front-end for [credshed](https://github.com/blacklanternsecurity/c
             ~~~
 1. Make sure uWSGI component is working:
     - `$ uwsgi --socket 127.0.0.1:8000 --protocol=http -w credshed-gui:app`
-    - Browse to http://127.0.0.1:8000
-    - `ctrl+c` to cancel after it's working properly
+    - Browse to http://127.0.0.1:8000 and verify that you see the CredShed login page
+    - `ctrl+c` to stop
 1. Install, enable, and start CredShed uWSGI service:
     ~~~
     $ sudo ln -s /opt/credshed-gui/webserver/credshed-gui.service /etc/systemd/system/credshed-gui.service
     $ sudo systemctl enable credshed-gui
     $ sudo systemctl start credshed-gui
     ~~~
-1. Edit `webserver/nginx.conf` to have correct FQDN, for example: credshed.example.com
+1. Edit `webserver/nginx.conf` to have correct FQDN, e.g. `credshed.example.com`
 1. Install, enable and start Nginx service:
     ~~~
     $ sudo apt install nginx
@@ -61,7 +61,7 @@ Flask web app front-end for [credshed](https://github.com/blacklanternsecurity/c
 1. Install LetsEncrypt Certificate and enable HTTPS (Optional but Recommended):
     1. Add certbot repo and install
         ~~~
-        $ sudo apt install software-properties-common
+        $ sudo apt install software-properties-common # "add-apt-repository" not installed by default on Debian
         $ sudo add-apt-repository ppa:certbot/certbot
         $ sudo apt-get update
         $ sudo apt-get install python-certbot-nginx
