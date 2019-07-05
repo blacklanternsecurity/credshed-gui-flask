@@ -4,6 +4,21 @@ Flask web app front-end for [credshed](https://github.com/blacklanternsecurity/c
 ![credshed-gui-screenshot](https://user-images.githubusercontent.com/20261699/60697972-c059f900-9eb2-11e9-8a12-7db633c00eb0.png)
 
 
+## Usage:
+~~~
+$ ./credshed-gui.py --help
+usage: credshed-gui.py [-h] [-ip IP] [-p PORT] [-d]
+
+Front-end GUI for CredShed
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -ip IP, --ip IP       IP address on which to listen (default: 127.0.0.1)
+  -p PORT, --port PORT  port on which to listen (default: 5007)
+  -d, --debug           enable debugging
+~~~
+
+
 ## Dev / Debugging Setup:
 1. Clone github repo into `/opt`
     ~~~
@@ -20,6 +35,7 @@ Flask web app front-end for [credshed](https://github.com/blacklanternsecurity/c
 1. Run the app:
     - `./credshed-gui.py`
 1. Browse to [http://localhost:5007](http://localhost:5007)
+
 
 ## Production Setup:
 1. Clone github repo into `/opt`
@@ -76,17 +92,3 @@ Flask web app front-end for [credshed](https://github.com/blacklanternsecurity/c
         ~~~
         $ sudo systemctl reload nginx
         ~~~
-
-## Usage:
-~~~
-$ ./credshed-gui.py --help
-usage: credshed-gui.py [-h] [-ip IP] [-p PORT] [-d]
-
-Front-end GUI for CredShed
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -ip IP, --ip IP       IP address on which to listen (default: 127.0.0.1)
-  -p PORT, --port PORT  port on which to listen (default: 5007)
-  -d, --debug           enable debugging
-~~~
