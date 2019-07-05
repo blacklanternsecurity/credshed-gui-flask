@@ -17,11 +17,23 @@ from lib.credshed.credshed import *
 # other
 import sys
 import string
+import logging
 import argparse
 from time import sleep
 from datetime import datetime
 import lib.security as security
 
+# set up logging
+log_file = '/var/log/credshed/credshed-gui.log'
+log_level=logging.DEBUG
+log_format='%(asctime)s\t%(levelname)s\t%(name)s\t%(message)s'
+try:
+    logging.basicConfig(level=log_level, filename=log_file, format=log_format)
+except (PermissionError, FileNotFoundError):
+    logging.basicConfig(level=log_level, filename='credshed-gui.log', format=log_format)
+    errprint('[!] Unable to create log file at {}, logging to current directory'.format(log_file))
+log = logging.getLogger('credshed')
+log.setLevel(log_level)
 
 
 # create the application object
@@ -59,6 +71,7 @@ def search():
 
         try:
             query = flask.request.form['query'].strip()
+            log.info('Query "{}" by {}'.format(query, current_user.username))
             search_report, results = credshed_search(query, limit=limit)
 
         except CredShedError as e:
@@ -115,8 +128,10 @@ def login():
         return flask.render_template('pages/login.html')
 
     elif flask.request.method == 'POST':
-        if security.validate_login(flask.request.form):
-            login_user(security.User())
+        if 'username' in flask.request.form:
+            user = security.validate_login(flask.request.form)
+            if not user.is_anonymous:
+                login_user(user)
             return flask.redirect('/')
 
         else:
@@ -164,7 +179,8 @@ def logout():
 
 @login_manager.user_loader
 def load_user(user_id):
-    return security.User()
+    user = security.user_lookup_by_id(user_id)
+    return user
 
 
 
