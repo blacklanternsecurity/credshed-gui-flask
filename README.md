@@ -1,6 +1,8 @@
 # credshed-gui
 Flask web app front-end for [credshed](https://github.com/blacklanternsecurity/credshed)
 
+![credshed-gui-screenshot](https://user-images.githubusercontent.com/20261699/60697972-c059f900-9eb2-11e9-8a12-7db633c00eb0.png)
+
 
 ## Dev / Debugging Setup:
 1. Clone github repo into `/opt`
