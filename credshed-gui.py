@@ -2,11 +2,6 @@
 
 # by TheTechromancer
 
-'''
-TODO:
-    Improve CSV escaping
-'''
-
 # flask classes
 import flask
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
@@ -20,8 +15,10 @@ import string
 import logging
 import argparse
 from time import sleep
+from lib.export_csv import *
 from datetime import datetime
 import lib.security as security
+
 
 # set up logging
 log_file = '/var/log/credshed/credshed-gui.log'
@@ -55,9 +52,6 @@ def home():
 @login_required
 def search():
 
-    #if not current_user.is_authenticated:
-    #    return flask.redirect('/login')
-
     if flask.request.method == 'GET':
         return flask.render_template('pages/search.html')
 
@@ -67,7 +61,7 @@ def search():
         search_report = ''
         error = ''
         results = []
-        limit = 10000
+        limit = 1000
 
         try:
             query = flask.request.form['query'].strip()
@@ -155,19 +149,12 @@ def export_csv():
         search_report, results = credshed_search(query, limit=0)
 
     except CredShedError as e:
-        error = str(e)
-
-    def stream_file():
-        yield 'Email,Username,Password,Misc\n'.encode('utf-8')
-        for r in results:
-            account = (','.join(['"{}"'.format(c.replace(',', '""","""').replace('""', '\\"')\
-                ) for c in str(r).split(':')]) + '\n').encode('utf-8')
-            yield account
+        log.error(str(e))
 
     query_str = ''.join([c for c in query if c.lower() in string.ascii_lowercase])
     filename = 'credshed_{}_{date:%Y%m%d-%H%M%S}.csv'.format( query_str, date=datetime.now() )
 
-    return flask.Response(flask.stream_with_context(stream_file()), content_type='text/csv', \
+    return flask.Response(flask.stream_with_context(iter_csv(results)), content_type='text/csv', \
         headers={'Content-Disposition': 'attachment; filename={}'.format(filename)})
 
 
@@ -197,7 +184,6 @@ if __name__ == '__main__':
     try:
 
         options = parser.parse_args()
-
 
         # start the server with the 'run()' method
         app.run(host=options.ip, port=options.port, debug=options.debug)
