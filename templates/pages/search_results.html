@@ -44,7 +44,7 @@
         {% for result in results %}
           <tr>
             <td class="align-top" style="position:absolute">
-              <button class="btn btn-sm btn-secondary font-weight-bold meta-fetch text-success" type="button" data-toggle="collapse" data-target="#meta-{{ result._id }}" aria-expanded="false" aria-controls="meta-{{ result._id }}">
+              <button class="btn btn-sm btn-success font-weight-bold meta-fetch" type="button" data-toggle="collapse" data-target="#meta-{{ result._id }}" aria-expanded="false" aria-controls="meta-{{ result._id }}">
                 &gt;
               </button>
             </td>
@@ -52,7 +52,7 @@
               <div class="ml-5 my-1 credshed-account text-white font-weight-bold" _id="acc-{{ result._id }}">
                 {{ result }}
               </div>
-              <div class="ml-5 text-dark collapse" id="meta-{{ result._id }}"></div>
+              <div class="ml-5 text-dark collapse" id="meta-{{ result._id }}"><ul><li></li></ul></div>
             </td>
           </tr>
         {% endfor %}
