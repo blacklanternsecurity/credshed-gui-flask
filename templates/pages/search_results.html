@@ -7,7 +7,11 @@
 <div class="container m-2">
   <h6>
     {% for entry in search_report %}
-      {{ entry }}
+      {% if 'Displaying first' in entry %}
+        <span class="text-warning">{{ entry }}</span>
+      {% else %}
+        <span>{{ entry }}</span>
+      {% endif %}
     <br>
     {% endfor %}
   </h6>
@@ -15,8 +19,8 @@
 <div class="container">
   <br>
   <!--<div class="scrollbar card" id="scrollbar-1">-->
-  <table class="container-fluid table-light table-hover border border-success">
-    <thead class="border border-success">
+  <table class="container-fluid table-light table-hover">
+    <thead>
       <tr>
         <th scope="col">
           <h5 class="text-dark m-3">
