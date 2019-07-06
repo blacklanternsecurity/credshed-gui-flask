@@ -49,8 +49,7 @@ $('.js-copy-all').click(function() {
 
   // replaces break tags with newlines
   // var text = $('#search-results').html().replace(/<br>/g, '\n').trim();
-  var el = $(this);
-  copyToClipboard(text, el);
+  copyToClipboard(text, $(this));
 });
 
 
@@ -58,8 +57,7 @@ $('.js-copy-one').click(function() {
 
   $('.js-tooltip').tooltip();
 
-  var text = $(this).find('td').find('div')[0].innerText
+  var text = $(this).find('div')[0].innerText
 
-  var el = $(this);
-  copyToClipboard(text, el);
+  copyToClipboard(text, $(this));
 });

@@ -41,6 +41,44 @@ login_manager = LoginManager(app)
 app.secret_key = security.get_secret_key()
 
 
+class WebSafeAccount():
+    '''
+    Takes care of non-css-friendly characters in Account._id
+
+    And yes, the web front-end was an afterthought.
+    '''
+
+    def __init__(self, account):
+
+        self.account = str(account)
+        self._id = self.make_safe_id(account._id)
+
+
+    def __str__(self):
+
+        return self.account
+
+
+    def make_safe_id(self, _id):
+
+        _id = _id.replace('|', '-_-_-')
+        _id = _id.replace('/', '_____')
+        _id = _id.replace('+', '-----')
+        _id = _id.replace('.', '__-__')
+        return _id
+
+
+    @staticmethod
+    def convert_safe_id(_id):
+
+        _id = _id.replace('-_-_-', '|')
+        _id = _id.replace('_____', '+')
+        _id = _id.replace('-----', '/')
+        _id = _id.replace('__-__', '.')
+        return _id
+
+
+
 @app.route('/')
 def home():
     if current_user.is_authenticated:
@@ -67,6 +105,7 @@ def search():
             query = flask.request.form['query'].strip()
             log.info('Query "{}" by {}'.format(query, current_user.username))
             search_report, results = credshed_search(query, limit=limit)
+            results = [WebSafeAccount(result) for result in results]
 
         except CredShedError as e:
             error = str(e)
@@ -131,6 +170,21 @@ def login():
         else:
             sleep(3)
             return flask.redirect('/login')
+
+
+
+@app.route('/metadata/<account_id>', methods=['GET'])
+@login_required
+def metadata(account_id):
+
+    credshed = CredShed(metadata=True)
+    account_id = WebSafeAccount.convert_safe_id(account_id)
+    print(account_id)
+    account_metadata = credshed.db.fetch_account_metadata(account_id)
+
+    return str(account_metadata).replace('\n', '<br>')
+
+
 
 
 @app.route('/export_csv')

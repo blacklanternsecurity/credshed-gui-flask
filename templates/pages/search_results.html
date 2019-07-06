@@ -3,6 +3,7 @@
 {% block content %}
 
 {% include "layouts/search.html" %}
+
 <div class="container m-2">
   <h6>
     {% for entry in search_report %}
@@ -41,11 +42,17 @@
     <table class="container-fluid table-light table-striped table-hover overflow-auto">
       <tbody class="text-nowrap">
         {% for result in results %}
-          <tr class="js-tooltip js-copy-one" data-toggle="tooltip" title="Copy to clipboard">
-            <td scope="row">
-              <div class="credshed-account text-white" _id="{{ result._id }}">
+          <tr>
+            <td class="align-top" style="position:absolute">
+              <button class="btn btn-sm btn-secondary font-weight-bold meta-fetch text-success" type="button" data-toggle="collapse" data-target="#meta-{{ result._id }}" aria-expanded="false" aria-controls="meta-{{ result._id }}">
+                &gt;
+              </button>
+            </td>
+            <td class="ml-5 js-tooltip js-copy-one" data-toggle="tooltip" title="Copy to clipboard" scope="row">
+              <div class="ml-5 my-1 credshed-account text-white font-weight-bold" _id="acc-{{ result._id }}">
                 {{ result }}
               </div>
+              <div class="ml-5 text-dark collapse" id="meta-{{ result._id }}"></div>
             </td>
           </tr>
         {% endfor %}
@@ -54,5 +61,10 @@
     <br>
   </div>
 </div>
+
+<!-- Clipboard JS -->
+<script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
+<!-- Metadata collapse toggle button JS -->
+<script src="{{ url_for('static', filename='js/meta-fetch.js') }}"></script>
 
 {% endblock %}
