@@ -99,7 +99,7 @@ def search():
         search_report = ''
         error = ''
         results = []
-        limit = 10
+        limit = 1000
 
         try:
             query = flask.request.form['query'].strip()
