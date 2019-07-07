@@ -99,7 +99,7 @@ def search():
         search_report = ''
         error = ''
         results = []
-        limit = 1000
+        limit = 10
 
         try:
             query = flask.request.form['query'].strip()
@@ -140,7 +140,7 @@ def credshed_search(query, limit=0):
         results = list(credshed.search(query, query_type=query_type, limit=limit))
         num_results = len(results)
         if num_results == limit:
-            search_report.append('Displaying first {:,} results for "{}"'.format(limit, query))
+            search_report.append('Results for "{}" limited to {:,}'.format(flask.escape(query), limit))
         else:
             search_report.append('{:,} results for "{}"'.format(num_results, query))
     else:

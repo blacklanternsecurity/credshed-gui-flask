@@ -7,8 +7,13 @@
 <div class="container m-2">
   <h6>
     {% for entry in search_report %}
-      {% if 'Displaying first' in entry %}
-        <span class="text-warning">{{ entry }}</span>
+      {% if ' limited to ' in entry %}
+        <span class="text-warning">
+          <strong>
+            {{ entry }}<br>
+            Use the CSV download feature if you want everything
+          </strong>
+        </span>
       {% else %}
         <span>{{ entry }}</span>
       {% endif %}
@@ -23,7 +28,7 @@
     <thead>
       <tr>
         <th scope="col">
-          <h5 class="text-dark m-3">
+          <h5 class="text-dark m-3 ml-5">
             email : username : password : description
           </h5>
         </th>
