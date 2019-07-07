@@ -28,14 +28,12 @@
           </h5>
         </th>
         <th scope="col" style="width: 10%">
-        <div class="btn-group m-1">
-          <button type="button" class="btn btn-md btn-secondary js-tooltip m-1 js-copy-all" data-toggle="tooltip" data-placement="top" title="Copy to clipboard">
-          <i class="large material-icons">content_copy</i>
+        <div class="btn-group mr-1">
+          <button type="button" class="btn btn-md btn-outline-secondary bg-light js-tooltip m-1 js-copy-all" data-toggle="tooltip" data-placement="top" title="Copy to clipboard">
+            <i class="large material-icons text-success mt-1">content_copy</i>
           </button>
-          <a href="/export_csv?query={{query}}">
-            <button type="button" class="btn btn-md btn-secondary js-tooltip m-1" data-toggle="tooltip" data-placement="top" title="Download CSV">
-            <i class="large material-icons">cloud_download</i>
-            </button>
+          <a href="/export_csv?query={{ query }}" class="btn btn-md btn-outline-secondary bg-light js-tooltip m-1" data-toggle="tooltip" data-placement="top" title="Download CSV" role="button">
+            <i class="large material-icons text-success mt-1">cloud_download</i>
           </a>
         </div>
         </th>
@@ -48,7 +46,7 @@
         {% for result in results %}
           <tr>
             <td class="align-top" style="position:absolute">
-              <button class="btn btn-sm btn-success font-weight-bold meta-fetch" type="button" data-toggle="collapse" data-target="#meta-{{ result._id }}" aria-expanded="false" aria-controls="meta-{{ result._id }}">
+              <button class="btn btn-sm btn-outline-secondary font-weight-bold meta-fetch text-success bg-light" type="button" data-toggle="collapse" data-target="#meta-{{ result._id }}" aria-expanded="false" aria-controls="meta-{{ result._id }}">
                 &gt;
               </button>
             </td>
