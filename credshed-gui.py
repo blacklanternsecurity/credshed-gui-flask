@@ -72,8 +72,8 @@ class WebSafeAccount():
     def convert_safe_id(_id):
 
         _id = _id.replace('-_-_-', '|')
-        _id = _id.replace('_____', '+')
-        _id = _id.replace('-----', '/')
+        _id = _id.replace('_____', '/')
+        _id = _id.replace('-----', '+')
         _id = _id.replace('__-__', '.')
         return _id
 
@@ -180,6 +180,7 @@ def metadata(account_id):
     credshed = CredShed(metadata=True)
     account_id = WebSafeAccount.convert_safe_id(account_id)
     account_metadata = credshed.db.fetch_account_metadata(account_id)
+    print(account_id)
 
     if account_metadata:
         return '<ul>{}</ul>'.format('\n'.join(['<li>{}</li>'.format(flask.escape(str(s))) for s in account_metadata]))
