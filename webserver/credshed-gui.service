@@ -2,12 +2,8 @@
 
 [Unit]
 Description=CredShed GUI
-
-# Requirements
-Requires=network.target
-
-# Dependency ordering
-After=network.target
+Requires=network.target credshed.service
+After=network.target credshed.service
 
 [Service]
 TimeoutStartSec=0
@@ -16,15 +12,13 @@ Restart=always
 
 # path to app
 WorkingDirectory=/opt/credshed-gui
-# run the app as this user
-User=www-data
 
 KillSignal=SIGQUIT
 Type=notify
 NotifyAccess=all
 
 # Main process
-ExecStart=/usr/bin/uwsgi --ini /opt/credshed-gui/webserver/uwsgi.ini
+ExecStart=/usr/bin/uwsgi --chown-socket=www-data:www-data --socket /tmp/credshed.sock --chmod-socket=660 --plugins=python3 -w credshed-gui:app --processes=5 --master --vacuum --uid user --gid user
 
 [Install]
 WantedBy=multi-user.target

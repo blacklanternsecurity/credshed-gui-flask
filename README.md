@@ -93,3 +93,12 @@ optional arguments:
         ~~~
         $ sudo systemctl reload nginx
         ~~~
+1. Log in
+    - An account is automatically generated and printed to the screen after the first login attempt
+    - You can also add/remove users by editing `db/users.db`.  It uses simple JSON in the format:
+    ~~~
+    {
+        "username": [<userid>, "<password sha512sum>"],
+        ...
+    }
+    ~~~
