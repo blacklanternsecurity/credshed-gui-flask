@@ -42,14 +42,14 @@ optional arguments:
     ~~~
     $ cd /opt
     $ sudo git clone --recursive https://github.com/blacklanternsecurity/credshed-gui
-    $ sudo chown root:www-data /opt/credshed-gui
+    $ sudo chown -R user:user /opt/credshed-gui # replace "user" with a low-privileged user who will be running the app
     $ sudo chmod 770 /opt/credshed-gui
     ~~~
 1. Follow instructions in the [credshed](https://github.com/blacklanternsecurity/credshed) README to set up backend
     - NOTE: the `credshed` repo has already been cloned into `/opt/credshed-gui/lib/credshed` in the previous step
 1. Install uWSGI and its associated Python module:
     ~~~
-    $ sudo apt install uwsgi python3.7 python3.7-dev python3.7-pip
+    $ sudo apt install uwsgi uwsgi-plugin-python3 python3.7 python3.7-dev python3.7-pip
     $ python3.7 -m pip install -r requirements.txt
     ~~~
     - NOTE: On Debian, the testing repo must be enabled for python3.7-dev:
@@ -59,16 +59,18 @@ optional arguments:
             deb-src http://ftp.us.debian.org/debian/ buster main contrib non-free
             ~~~
 1. Make sure uWSGI component is working:
-    - `$ uwsgi --socket 127.0.0.1:8000 --protocol=http -w credshed-gui:app`
-    - Browse to http://127.0.0.1:8000 and verify that you see the CredShed login page
+    - `$ uwsgi --plugins=python3 --socket 127.0.0.1:5007 --protocol=http -w credshed-gui:app`
+    - Browse to http://127.0.0.1:5007 and verify that you see the CredShed login page
     - `ctrl+c` to stop
 1. Install, enable, and start CredShed uWSGI service:
+    - FIRST, edit `--uid=user` `--gid=user` in the .service file to reflect the low-privileged user that will be running the app
     ~~~
     $ sudo ln -s /opt/credshed-gui/webserver/credshed-gui.service /etc/systemd/system/credshed-gui.service
     $ sudo systemctl enable credshed-gui
     $ sudo systemctl start credshed-gui
     ~~~
 1. Edit `webserver/nginx.conf` to have correct FQDN, e.g. `credshed.example.com`
+    - Also input the proper path for your SSL certificates or delete the SSL section if you plan on using LetsEncrypt
 1. Install, enable and start Nginx service:
     ~~~
     $ sudo apt install nginx
@@ -76,7 +78,7 @@ optional arguments:
     $ sudo systemctl enable nginx
     $ sudo systemctl start nginx
     ~~~
-1. Install LetsEncrypt Certificate and enable HTTPS (Optional but Recommended):
+1. Install LetsEncrypt Certificate and enable HTTPS (Optional):
     1. Add certbot repo and install
         ~~~
         $ sudo apt install software-properties-common # "add-apt-repository" not installed by default on Debian

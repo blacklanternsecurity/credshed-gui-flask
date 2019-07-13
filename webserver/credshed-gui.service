@@ -24,7 +24,7 @@ Type=notify
 NotifyAccess=all
 
 # Main process
-ExecStart=/usr/bin/uwsgi --ini /opt/credshed-gui/webserver/wsgi.ini
+ExecStart=/usr/bin/uwsgi --ini /opt/credshed-gui/webserver/uwsgi.ini
 
 [Install]
 WantedBy=multi-user.target
