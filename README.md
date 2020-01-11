@@ -26,10 +26,10 @@ optional arguments:
     ~~~
 1. Follow instructions in the [credshed](https://github.com/blacklanternsecurity/credshed) README to set up backend
     - NOTE: the `credshed` repo has already been cloned into `./lib/credshed` in the previous step
-1. Install python3.7 and Flask dependencies:
+1. Install python3 and Flask dependencies:
     ~~~
-    $ sudo apt install python3.7 python3.7-pip
-    $ python3.7 -m pip install -r requirements.txt
+    $ sudo apt install python3 python3-pip
+    $ python3 -m pip install -r requirements.txt
     ~~~
 1. Run the app:
     - `./credshed-gui.py`
@@ -48,10 +48,10 @@ optional arguments:
     - NOTE: the `credshed` repo has already been cloned into `/opt/credshed-gui/lib/credshed` in the previous step
 1. Install uWSGI and its associated Python module:
     ~~~
-    $ sudo apt install uwsgi uwsgi-plugin-python3 python3.7 python3.7-dev python3.7-pip
-    $ python3.7 -m pip install -r requirements.txt
+    $ sudo apt install uwsgi uwsgi-plugin-python3 python3 python3-dev python3-pip
+    $ python3 -m pip install -r requirements.txt
     ~~~
-    - NOTE: On Debian, the testing repo must be enabled for python3.7-dev:
+    - NOTE: On Debian, the testing repo must be enabled for python3-dev:
         - add the following to /etc/apt/sources.list and run `apt update` to enable the "testing" repo:
             ~~~
             deb http://ftp.us.debian.org/debian/ buster main contrib non-free

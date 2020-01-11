@@ -1,0 +1,32 @@
+#accounts-table-div {
+  border-radius: .3rem;
+  border: 1.5px solid var(--secondary);
+}
+
+#accounts-table tr,td {
+  cursor: pointer;
+}
+
+#accounts-table th,td {
+  font-size: 1.1rem;
+  font-family: monospace;
+  padding: .5rem;
+}
+
+#accounts-table th {
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+#accounts-table td {
+  padding: .5rem;
+}
+
+#results-buttons button {
+  font-size: 1.1rem;
+  font-weight: bold;
+  font-family: monospace;
+  color: var(--success);
+}

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3
 
 # by TheTechromancer
 
@@ -8,6 +8,8 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 
 # credshed
 from lib.credshed.credshed import *
+from lib.credshed.credshed.lib import logger
+from lib.credshed.credshed.lib import validation
 
 # other
 import sys
@@ -21,16 +23,7 @@ import lib.security as security
 
 
 # set up logging
-log_file = '/var/log/credshed/credshed-gui.log'
-log_level=logging.DEBUG
-log_format='%(asctime)s\t%(levelname)s\t%(name)s\t%(message)s'
-try:
-    logging.basicConfig(level=log_level, filename=log_file, format=log_format)
-except (PermissionError, FileNotFoundError):
-    logging.basicConfig(level=log_level, filename='credshed-gui.log', format=log_format)
-    errprint('[!] Unable to create log file at {}, logging to current directory'.format(log_file))
-log = logging.getLogger('credshed')
-log.setLevel(log_level)
+log = logging.getLogger('credshed.gui')
 
 
 # create the application object
@@ -104,16 +97,23 @@ def search():
         try:
             query = flask.request.form['query'].strip()
             log.info('Query "{}" by {}'.format(query, current_user.username))
-            search_report, results = credshed_search(query, limit=limit)
-            results = [WebSafeAccount(result) for result in results]
+            response = flask.jsonify(credshed_search(query, limit=limit))
+            response.set_cookie('last_credshed_search', flask.escape(query))
+            return response
 
-        except CredShedError as e:
-            error = str(e)
-        except KeyError:
-            query = ''
+        except (KeyError, CredShedError) as e:
+            log.error(f'Error executing search: {e}')
+            response = flask.jsonify({'search_report': f'Error executing search: {e}', 'error': True})
+            response.status_code = 400
+            return response
 
-        return flask.render_template('pages/search_results.html',\
-            query=query, results=results, search_report=search_report, error=error)
+
+@app.route('/count', methods=['POST'])
+@login_required
+def count():
+
+    return flask.jsonify({'count': 123})
+
 
 
 def credshed_search(query, limit=0):
@@ -121,36 +121,36 @@ def credshed_search(query, limit=0):
     returns (search_report, results)
     '''
 
+    accounts = []
     search_report = []
-    credshed = CredShed(metadata=False)
+
+    credshed = CredShed()
     num_accounts_in_db = credshed.db.account_count()
 
-    if Account.is_email(query):
-        query_type = 'email'
-        search_report.append('Searching by email')
-    elif re.compile(r'^([a-zA-Z0-9_\-\.]*)\.([a-zA-Z]{2,8})$').match(query):
-        query_type = 'domain'
-        search_report.append('Searching by domain')
-    else:
-        raise CredShedError('Invalid query')
+    query_type = validation.validate_query_type(query)
+    search_report.append(f'Searching by {query_type}')
 
     num_results = 0
     start_time = datetime.now()
-    if limit:
-        results = list(credshed.search(query, query_type=query_type, limit=limit))
-        num_results = len(results)
-        if num_results == limit:
-            search_report.append('Results for "{}" limited to {:,}'.format(flask.escape(query), limit))
-        else:
-            search_report.append('{:,} results for "{}"'.format(num_results, query))
+
+    for account in credshed.search(query, query_type=query_type, limit=limit):
+        accounts.append({k: flask.escape(v) for k,v in account.json.items()})
+
+    if len(accounts) == limit:
+        search_report.append('Results for "{}" limited to {:,}'.format(flask.escape(query), limit))
     else:
-        results = credshed.search(query, query_type=query_type, limit=limit)
+        search_report.append('{:,} results for "{}"'.format(credshed.count(query), query))
 
     end_time = datetime.now()
     time_elapsed = (end_time - start_time)
     search_report.append('Searched {:,} accounts in {} seconds'.format(num_accounts_in_db, str(time_elapsed)[:-4]))
 
-    return (search_report, results)
+    json_response = {
+        'search_report': search_report,
+        'accounts': accounts
+    }
+
+    return json_response
 
 
 
@@ -193,25 +193,24 @@ def metadata(account_id):
 @login_required
 def export_csv():
 
-    search_report = []
-    results = []
-
     try:
         query = flask.request.args.get('query')
         if query is not None:
             query = query.strip()
         else:
             query = ''
-        search_report, results = credshed_search(query, limit=0)
+
+        credshed = CredShed()
+        accounts = credshed.search(query)
+
+        query_str = ''.join([c for c in query if c.lower() in string.ascii_lowercase])
+        filename = 'credshed_{}_{date:%Y%m%d-%H%M%S}.csv'.format( query_str, date=datetime.now() )
+
+        return flask.Response(flask.stream_with_context(iter_csv(accounts)), content_type='text/csv', \
+            headers={'Content-Disposition': f'attachment; filename={filename}'})
 
     except CredShedError as e:
         log.error(str(e))
-
-    query_str = ''.join([c for c in query if c.lower() in string.ascii_lowercase])
-    filename = 'credshed_{}_{date:%Y%m%d-%H%M%S}.csv'.format( query_str, date=datetime.now() )
-
-    return flask.Response(flask.stream_with_context(iter_csv(results)), content_type='text/csv', \
-        headers={'Content-Disposition': 'attachment; filename={}'.format(filename)})
 
 
 @app.route('/logout')
@@ -242,12 +241,13 @@ if __name__ == '__main__':
         options = parser.parse_args()
 
         # start the server with the 'run()' method
+        log.info(f'Running on http://{options.ip}:{options.port}')
         app.run(host=options.ip, port=options.port, debug=options.debug)
 
     except (argparse.ArgumentError, AssertionError) as e:
-        sys.stderr.write('\n[!] {}\n\n'.format(str(e)))
+        log.critical(e)
         sys.exit(2)
 
     except KeyboardInterrupt:
-        sys.stderr.write('\n[!] Interrupted\n')
+        log.error('Interrupted')
         sys.exit(1)

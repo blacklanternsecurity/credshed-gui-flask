@@ -29,35 +29,28 @@ function copyToClipboard(text, el) {
   }
 }
 
+function getAccountText(_,el) {
+  var text = [];
+  $(el).find('td').each(function(k,v) {
+    text.push($(v).text());
+  })
+  return text.join(':');
+}
 
-$('.js-copy-all').click(function() {
-  // Initialize
-  // ---------------------------------------------------------------------
+$(document).ready(function() {
 
-  // Tooltips
-  // Requires Bootstrap 3 for functionality
-  $('.js-tooltip').tooltip();
+  $('.js-copy-all').click(function() {
+    $(this).tooltip();
+    var text = $('#accounts-table > tbody > tr')
+      .map(getAccountText).get().join('\n');
+    copyToClipboard(text, $(this));
+  });
 
-  var text = $( ".credshed-account" )
-    .map(function() {
-      return this.innerText;
-    })
-    .get()
-    .join('\n');
+  $(document).on('search-event', function() {
+    $('#accounts-table > tbody > tr').click(function() {
+      $(this).tooltip();
+      copyToClipboard(getAccountText(undefined, this), $(this));
+    });
+  })
 
-  // Copy to clipboard
-
-  // replaces break tags with newlines
-  // var text = $('#search-results').html().replace(/<br>/g, '\n').trim();
-  copyToClipboard(text, $(this));
-});
-
-
-$('.js-copy-one').click(function() {
-
-  $('.js-tooltip').tooltip();
-
-  var text = $(this).find('div')[0].innerText
-
-  copyToClipboard(text, $(this));
-});
+})

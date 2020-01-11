@@ -22,6 +22,8 @@ def iter_csv(accounts):
 
     line = Line()
     writer = csv.writer(line)
+    writer.writerow(['Email', 'Username', 'Password', 'Misc/Description'])
+    yield line.read()
     for account in accounts:
         writer.writerow([f.decode() for f in [
             account.email,
