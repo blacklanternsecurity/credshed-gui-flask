@@ -3,7 +3,7 @@
   border: 1.5px solid var(--secondary);
 }
 
-#accounts-table tr,td {
+#accounts-table td {
   cursor: pointer;
 }
 
@@ -24,9 +24,89 @@
   padding: .5rem;
 }
 
+#accounts-table td:not(:first-child):hover {
+  background-color: #666;
+}
+
 #results-buttons button {
   font-size: 1.1rem;
   font-weight: bold;
   font-family: monospace;
-  color: var(--success);
+  color: white;
+  border: 1.5px solid var(--secondary);
+}
+
+#results-container {
+  margin: 0;
+  margin-top: 5rem;
+  padding: 0;
+}
+
+/* metadata fetch button in table */
+
+.meta-fetch {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #666;
+  width: 2rem;
+}
+
+.meta-fetch:hover {
+  color: black;
+  background-color: var(--success);
+}
+
+/* account metadata window */
+
+#account-details {
+  position: absolute;
+  background-color: var(--light);
+  width: 30rem;
+  border-radius: .3rem;
+  border: 1.5px solid var(--secondary);
+  cursor: text;
+}
+
+#account-details button {
+  padding: .25rem;
+  padding-left: .5rem;
+  padding-right: .5rem;
+}
+
+#account-details-header {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+#account-details-topbar {
+  cursor: grab;
+}
+
+.window-content {
+  padding: .5rem;
+}
+
+/* download / clipboard buttons */
+
+#results-buttons > button {
+  display: flex !important;
+  align-items: center;
+  padding: 1rem;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+
+#results-buttons > button > i {
+  margin: 0;
+  margin-right: .5rem;
+}
+
+#results-buttons span {
+  margin-left: .5rem;
+}
+
+/* search report */
+#search-report ul {
+  margin: 0px;
+  padding: 0px;
 }

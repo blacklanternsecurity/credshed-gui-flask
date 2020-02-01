@@ -1,60 +1,76 @@
 {% extends 'layouts/base.html' %}
-{% block title %}Search the Cred Shed{% endblock %}
-{% block content %}
-
-{% include "layouts/search.html" %}
+{% block title %}c r e d s h e d{% endblock %}
 
 {% block header %}
-<link href="/static/css/search.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/search.css') }}" rel="stylesheet">
 {% endblock %}
 
-<div class="results-container container m-2" style="display:none">
+{% block content %}
 
-  <div class="d-flex" style="width:100%">
+  {% include "layouts/search.html" %}
 
-    <div id="search-report" class="m-0 d-flex">
+  <div id="results-container" class="container" style="display:none">
+
+    <div class="d-flex" style="width:100%">
+
+      <div id="search-report" class="m-0 d-flex">
+        <ul style="list-style-type:none;">
+        </ul>
+      </div>
+
+      <div id="results-buttons" class="d-flex btn-group ml-auto mt-auto">
+
+        <button id="search-stats" type="button" class="btn btn-md bg-light mr-2" data-toggle="tooltip" data-placement="top" title="Search statistics">
+          <i class="text-success fas fa-chart-pie"></i>
+          stats
+        </button>
+
+        <button type="button" class="btn btn-md bg-light js-tooltip mr-2 js-copy-all" data-toggle="tooltip" data-placement="top" title="Copy to clipboard">
+          <i class="text-success fas fa-clipboard"></i>
+          clipboard
+        </button>
+
+        <button id="csv-download" class="btn btn-md bg-light" data-toggle="tooltip" data-placement="top" title="Download CSV" role="button">
+          <i class="large text-success fas fa-download"></i>
+          .csv <span id="results-count"></span>
+        </button>
+
+      </div>
     </div>
 
-    <div id="results-buttons" class="d-flex btn-group ml-auto mt-auto">
-      <button type="button" class="btn btn-md btn-outline-secondary bg-light js-tooltip mr-2 js-copy-all" data-toggle="tooltip" data-placement="top" title="Copy to clipboard">
-        clipboard
-      </button>
-      <button id="csv-download" class="btn btn-md btn-outline-secondary bg-light js-tooltip" data-toggle="tooltip" data-placement="top" title="Download CSV" role="button">
-        .csv
-      </button>
+    <div id="accounts-table-div" class="container overflow-auto my-3 px-0">
+      <table title="copy to clipboard" id="accounts-table" class="container-fluid table-light table-striped overflow-auto">
+        <thead title="" class="py-2">
+          <tr>
+            <th></th>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Description</td>
+          </tr>
+        </thead>
+        <tbody class="results-body text-nowrap">
+          <tr style="display:none">
+            <td></td>
+            <td>test@test.com</td>
+            <td></td>
+            <td>P@ssw0rd</td>
+            <td>misc</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </div>
 
-  <div id="accounts-table-div" class="container overflow-auto my-3 px-0">
-    <table title="copy to clipboard" id="accounts-table" class="container-fluid table-light table-striped table-hover overflow-auto">
-      <thead title="" class="py-2">
-        <tr>
-          <th>Email</th>
-          <th>Username</th>
-          <th>Password</th>
-          <th>Description</td>
-        </tr>
-      </thead>
-      <tbody class="results-body text-nowrap">
-        <tr style="display:none">
-          <td>test@test.com</td>
-          <td></td>
-          <td>P@ssw0rd</td>
-          <td>misc</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
-
-</div>
 
 {% endblock %}
 
 {% block footer %}
-
-  <!-- Clipboard JS -->
-  <script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
-  <!-- Metadata collapse toggle button JS -->
   <script src="{{ url_for('static', filename='js/search.js') }}"></script>
-
+  <script src="{{ url_for('static', filename='js/metadata.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
 {% endblock footer %}
+
+{% block modals %}
+  {% include "modals/account_metadata.html" %}
+{% endblock %}

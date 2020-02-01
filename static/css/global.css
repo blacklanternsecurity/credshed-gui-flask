@@ -1,0 +1,18 @@
+#code-scroll {
+  color: var(--success);
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+#main-loading {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  font-family: monospace;
+  display: none;
+  position: fixed;
+  top: 50%; 
+  left: 50%; 
+  margin-top: -100px; 
+  margin-left: -100px; 
+}

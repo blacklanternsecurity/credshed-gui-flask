@@ -31,7 +31,7 @@ function copyToClipboard(text, el) {
 
 function getAccountText(_,el) {
   var text = [];
-  $(el).find('td').each(function(k,v) {
+  $(el).find('td:not(:first)').each(function(k,v) {
     text.push($(v).text());
   })
   return text.join(':');
@@ -47,9 +47,9 @@ $(document).ready(function() {
   });
 
   $(document).on('search-event', function() {
-    $('#accounts-table > tbody > tr').click(function() {
+    $('#accounts-table > tbody > tr > td:not(:first)').click(function() {
       $(this).tooltip();
-      copyToClipboard(getAccountText(undefined, this), $(this));
+      copyToClipboard($(this).text(), $(this));
     });
   })
 

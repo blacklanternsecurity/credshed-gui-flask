@@ -2,19 +2,37 @@
 <html>
   <head>
     <title>{% block title %}{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=0.7">
-    <!-- Latest compiled and minified Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- Cyborg theme -->
-    <link rel="stylesheet" href="https://bootswatch.com/4/cyborg/bootstrap.css">
-    <!-- Google Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=0.7">
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon/favicon.png') }}">
+
+    <!-- JQuery -->
+    <script src="{{ url_for('static', filename='js/thirdparty/popper-1.16.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/thirdparty/jquery-3.4.1.min.js') }}"></script>
+
+    <!-- jQuery UI -->
+    <script src="{{ url_for('static', filename='thirdparty/jquery-ui-1.12.1.custom/jquery-ui.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='thirdparty/jquery-ui-1.12.1.custom/jquery-ui.min.css') }}">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/thirdparty/bootstrap-4.4.1.min.css') }}">
+    <script src="{{ url_for('static', filename='js/thirdparty/bootstrap-4.4.1.min.js') }}"></script>
+
+    <!-- Cyborg theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/thirdparty/cyborg-4.4.1.min.css') }}">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='icon/thirdparty/fontawesome-free-5.12.0-web/css/all.css') }}">
+
+    <!-- Chart.js -->
+    <script src="{{ url_for('static', filename='js/thirdparty/chart-2.9.3.bundle.min.js') }}"></script>
+
+    <!-- Global JS -->
+    <script src="/js/global.js"></script>
+
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
 
     {% block header %}
     {% endblock %}
@@ -26,21 +44,25 @@
 
       {% include 'layouts/nav.html' %}
 
-      {% if error %}
-        <div class="alert alert-warning text-light" role="alert">
-          {{ error }}
-        </div>
-      {% endif %}
-
-      <div class="mt-4 container">
+      <div id="main-content" class="mt-4 container">
         {% block content %}{% endblock %}
       </div>
 
     </div>
 
-    <div>
+    <div id="main-footer" class="footer">
       {% block footer %}
       {% endblock %}
+    </div>
+
+    <div id="main-modals" class="modals">
+      {% block modals %}
+      {% endblock %}
+    </div>
+
+    <!-- div for "loading" message -->
+    <div id="main-loading">
+      Loading ...
     </div>
 
   </body>
