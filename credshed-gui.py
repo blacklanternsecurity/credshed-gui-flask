@@ -23,11 +23,16 @@ def home():
     return render_template('pages/search.html')
 
 
-
 @gui.route('/login', methods=['GET'])
 def login():
 
     return render_template('pages/login.html')
+
+
+@gui.route('/source_stats', methods=['GET'])
+def source_stats():
+
+    return render_template('pages/source_stats.html')
 
 
 @gui.route('/search_stats', methods=['GET'])
@@ -66,7 +71,7 @@ if __name__ == '__main__':
         else:
             logging.getLogger('credshed').setLevel(logging.INFO)
 
-        log.info(f'Running on http://{options.ip}:{options.port}')
+        log.info(f'Credshed GUI running on http://{options.ip}:{options.port}')
 
         if options.debug:
             api.debug = True

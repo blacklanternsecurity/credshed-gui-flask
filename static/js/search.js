@@ -68,7 +68,6 @@ function submit_search() {
     'error': function(data) {
       fill_results([]);
       $('#search-report').addClass('text-danger');
-      console.log(data);
       if (data.responseJSON.error) {
         fill_search_report(data.responseJSON.search_report);
       } else {

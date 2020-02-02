@@ -36,24 +36,34 @@ function type_text (target, message, index=0, interval=1) {
   }
 }
 
-
-async function loading (filename="/static/js/search.js") {
+function loading(filename="/static/js/search.js") {
+  $('#main-loading').text('Loading ...');
+  $('#main-loading').removeAttr('class');
+  $('#main-loading').show();
+  $('#main-content').html('<pre id="code-scroll"></pre>');
   display_loading = true;
+  async_loading(filename);
+}
+
+async function async_loading (filename) {
   $.get({
     url: filename,
     success: function (response) {
-      $('#main-loading').show();
-      $('#main-content').html('<pre id="code-scroll"></pre>');
       type_text('#code-scroll', response);
     }
   })
 }
 
-
-function stop_loading() {
+function stop_loading(message='Error', error=false) {
+  if (error === true) {
+    $('#main-loading').text(message);
+    $('#main-loading').addClass('text-danger');
+    $('#main-loading').show();
+  } else {
+    $('#main-loading').hide();
+    $('#main-content').empty();
+  }
   display_loading = false;
-  $('#main-loading').hide();
-  $('#main-content').empty();
 }
 
 

@@ -33,7 +33,6 @@ function get_account_metadata(element) {
   }
 }
 
-
 function show_account_details(account_id, sources, element) {
   save_account_metadata(account_id, sources);
   $('#account-details-content').text('Loading...');
@@ -49,12 +48,17 @@ function show_account_details(account_id, sources, element) {
 function build_account_details(sources) {
   // create the unordered list
   var ul = document.createElement('ul');
-  for (var i = 0; i < sources.length; i++) {
+  for (const [source_id, source_name] of Object.entries(sources)) {
+    // for (var i = 0; i < sources.length; i++) {
+    // Create the link
+    var item_a = document.createElement('a');
+    item_a.setAttribute('href', `/source_stats?id=${source_id}`);
     // Create the list item:
     var item_el = document.createElement('li');
-    var item_text = sources[i];
+    var item_text = document.createTextNode(source_name);
     // Set its contents:
-    item_el.appendChild(document.createTextNode(sources[i]));
+    item_el.appendChild(item_a);
+    item_a.appendChild(item_text);
     // Add it to the list:
     ul.appendChild(item_el);
   }
