@@ -22,7 +22,7 @@ function prep_chart(json_data, limit=10, div_id='chart0') {
 
 function show_pie(chart_label, json_data, limit=10, div_id='chart0') {
 
-  var [ctx, labels, counts] = prep_chart(json_data, limit, chart_label, div_id)
+  var [ctx, labels, counts] = prep_chart(json_data, limit, div_id)
   var myChart = new Chart(ctx, {
     type: 'pie',
     data: {
@@ -30,9 +30,7 @@ function show_pie(chart_label, json_data, limit=10, div_id='chart0') {
       datasets: [{
         title: chart_label,
         data: counts,
-        backgroundColor: 'rgba(255,255,255,.1)',
-        borderColor: get_rainbow_steps(labels.length),
-        borderWidth: 5
+        backgroundColor: get_pie_green(labels.length),
       }]
     },
     options: {
@@ -66,9 +64,7 @@ function show_bar(chart_label, json_data, key_label, value_label, limit=10, div_
       labels: labels,
       datasets: [{
         data: counts,
-        backgroundColor: 'rgba(255,255,255,.1)',
-        borderColor: get_rainbow_steps(labels.length),
-        borderWidth: 5
+        backgroundColor: get_bar_green(labels.length),
       }]
     },
     options: {

@@ -22,6 +22,7 @@ $(document).ready(function() {
       success: function(response) {
         stop_loading();
         show_bar(`Statistics for "${query}"`, response['sources'], 'Leaks', 'Accounts');
+        //show_pie(`Statistics for "${query}"`, response['sources']);
       },
       error: function(response) {
         stop_loading(error=true);

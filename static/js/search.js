@@ -140,10 +140,11 @@ function fill_results(accounts) {
     var email = accounts[i]['e'];
     var username = accounts[i]['u'];
     var password = accounts[i]['p'];
+    var hash = accounts[i]['h'];
     var misc = accounts[i]['m'];
 
     $('#accounts-table > tbody:last-child').append(
-      `<tr id="${encodeURIComponent(account_id)}"><td title="Details" class="meta-fetch">[i]</td><td>${email}</td><td>${username}</td><td>${password}</td><td>${misc}</td></tr>`
+      `<tr id="${encodeURIComponent(account_id)}"><td title="Details" class="meta-fetch">[i]</td><td>${email}</td><td>${username}</td><td>${password}</td><td>${hash}</td><td>${misc}</td></tr>`
     );
   }
 }
