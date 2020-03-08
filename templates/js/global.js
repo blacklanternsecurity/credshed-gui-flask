@@ -67,6 +67,12 @@ function stop_loading(message='Error', error=false) {
 }
 
 
+function unhide_columns() {
+  $('#accounts-table th').show();
+  $('#accounts-table td').show();
+}
+
+
 function hide_empty_columns() {
   $('#accounts-table th').each(function(i) {
     var remove = 0;

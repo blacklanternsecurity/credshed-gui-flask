@@ -12,6 +12,9 @@ gui = Flask('credshed-gui')
 base_api_url = '/api'
 
 # /api gets routed to credshed api
-app = DispatcherMiddleware(gui, {
-    '/api': api
-})
+app = DispatcherMiddleware(
+    gui, 
+    {
+        '/api': api
+    }
+)

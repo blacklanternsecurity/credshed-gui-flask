@@ -33,32 +33,27 @@ function submit_search() {
 
   $('#results-count').text(` [calculating ...]`);
 
-  // search results
-  var query_json = JSON.stringify({
-    'query': $('#search-input').val()
-  })
+  var query = $('#search-input').val();
 
   $('#results-container').show()
   $.post({
     url: base_api_url + '/search',
-    dataType: 'json',
-    contentType: 'application/json',
-    data: query_json,
+    data: {'query': query},
     'success': function(data) {
       save_search();
       prefill_search();
       fill_search_report(data['stats']);
       fill_results(data['accounts']);
+      unhide_columns();
       hide_empty_columns();
       $(document).trigger('search-event');
 
       // result count
       $.post({
         url: base_api_url + '/count',
-        data: query_json,
-        dataType: 'json',
-        contentType: 'application/json',
+        data: {'query': query},
         success: function(data) {
+          $('#search-report').removeClass('text-danger');
           var count = data["count"].toLocaleString();
           $('#results-count').text(` [${count} records]`);
         },
@@ -68,10 +63,14 @@ function submit_search() {
     'error': function(data) {
       fill_results([]);
       $('#search-report').addClass('text-danger');
-      if (data.responseJSON.error) {
-        fill_search_report(data.responseJSON.search_report);
-      } else {
-        fill_search_report(['Unknown error']);
+      try {
+        if (data.responseJSON.error) {
+          fill_search_report(data.responseJSON.search_report);
+        } else {
+          fill_search_report(['Unknown error']);
+        }
+      } catch {
+        fill_search_report(['Unknown error - is the server online?']);
       }
       $('#search-input').select();
     }
@@ -97,19 +96,18 @@ function get_search() {
   return window.localStorage.getItem('credshed_last_search');
 }
 
-function get_search_json() {
-  return JSON.stringify({'query': get_search()});
-}
-
 function fill_search_report(stats) {
 
   var report = [];
+
   report.push(`Searching by ${stats['query_type']}`);
+
   if (stats['limit'] == stats['count']) {
     report.push(`Showing top ${stats['limit']} results for "${stats['query']}"`);  
   } else {
     report.push(`${stats['count']} results for "${stats['query']}"`);
   }
+
   report.push(`Searched ${stats['searched']} accounts in ${stats['elapsed']} seconds`)
 
   var search_report_ul = $('#search-report > ul');

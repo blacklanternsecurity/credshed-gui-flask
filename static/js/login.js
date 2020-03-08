@@ -12,12 +12,10 @@ $(document).ready(function() {
 
     $.post({
       url: base_api_url + $('#login-form').attr('action'),
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify({
+      data: {
         'username': $('#login-username').val(),
         'password': $('#login-password').val()
-      }),
+      },
       success: function(data) {
         console.log('success ' + data);
         window.location.href = '/';

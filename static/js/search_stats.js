@@ -13,15 +13,13 @@ $(document).ready(function() {
 
     $.post({
       url: base_api_url + '/search_stats',
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify({
+      data: {
         'query': query,
         'limit': limit
-      }),
+      },
       success: function(response) {
         stop_loading();
-        show_bar(`Statistics for "${query}"`, response['sources'], 'Leaks', 'Accounts');
+        show_bar(`Statistics for "${query}"`, response['report'], 'Leaks', 'Accounts');
         //show_pie(`Statistics for "${query}"`, response['sources']);
       },
       error: function(response) {

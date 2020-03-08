@@ -1,4 +1,9 @@
-function prep_chart(json_data, limit=10, div_id='chart0') {
+
+
+// Given a JSON object, creates a canvas element
+// and returns the labels and values for the chart
+// Used for both Pie and Bar charts
+function prep_chart(json_data, limit=10, div_id=null) {
 
   var data_sorted = [];
 
@@ -12,7 +17,12 @@ function prep_chart(json_data, limit=10, div_id='chart0') {
   var labels = data_sorted.map(i => i[0]).slice(0, limit);
   var counts = data_sorted.map(i => i[1]).slice(0, limit);
 
-  $('#main-content').html(`<canvas id="${div_id}" class="credshed-chart", height="600", width="1000"></canvas>`);
+  if (div_id == null) {
+    num_charts = $('#main-content canvas').length;
+    div_id = `chart${num_charts}`;
+  }
+
+  $('#main-content').append(`<canvas id="${div_id}" class="credshed-chart", height="600", width="1000"></canvas>`);
 
   var ctx = document.getElementById(div_id).getContext('2d');
 
@@ -20,7 +30,7 @@ function prep_chart(json_data, limit=10, div_id='chart0') {
 
 }
 
-function show_pie(chart_label, json_data, limit=10, div_id='chart0') {
+function show_pie(chart_label, json_data, limit=10, div_id=null) {
 
   var [ctx, labels, counts] = prep_chart(json_data, limit, div_id)
   var myChart = new Chart(ctx, {
@@ -54,7 +64,14 @@ function show_pie(chart_label, json_data, limit=10, div_id='chart0') {
 }
 
 
-function show_bar(chart_label, json_data, key_label, value_label, limit=10, div_id='chart0') {
+function clear_charts() {
+
+  $('#main-content canvas').remove();
+
+}
+
+
+function show_bar(chart_label, json_data, key_label, value_label, limit=10, div_id=null) {
 
   var [ctx, labels, counts] = prep_chart(json_data, limit, div_id);
 

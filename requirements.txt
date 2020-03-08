@@ -1,4 +1,7 @@
 Flask
-flask-login
-pymongo
+Flask-JWT-Extended
 uwsgi
+requests
+pymongo
+matplotlib
+python-magic
