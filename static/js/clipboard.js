@@ -33,7 +33,7 @@ function getAccountText(_,el) {
   $(el).find('td:not(:first)').each(function(k,v) {
     text.push($(v).text());
   })
-  return text.join(':');
+  return text.join('\t');
 }
 
 $(document).ready(function() {

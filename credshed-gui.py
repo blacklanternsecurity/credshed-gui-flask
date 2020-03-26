@@ -12,6 +12,7 @@ from flask import redirect, render_template
 
 # credshed
 from lib.app import *
+from lib.api import logger
 
 # set up logging
 log = logging.getLogger('credshed.gui')
@@ -71,6 +72,8 @@ if __name__ == '__main__':
         else:
             logging.getLogger('credshed').setLevel(logging.INFO)
 
+        logger.listener.start()
+
         log.info(f'Credshed GUI running on http://{options.ip}:{options.port}')
 
         if options.debug:
@@ -86,3 +89,9 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         log.error('Interrupted')
         exit(1)
+
+    finally:
+        try:
+            logger.listener.stop()
+        except:
+            pass
